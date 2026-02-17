@@ -52,42 +52,75 @@
     © 2026 DIPLOMAT SUN
 </footer>
 
-<h2 style="text-align:center; margin-top:60px;">Маршрут путешествия по России</h2>
+<h2 style="text-align:center; margin-top:60px;">
+Маршрут путешествия по России
+</h2>
 
 <div id="map"></div>
 
-<!-- Leaflet CSS -->
-<link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css"/>
-
-<!-- Leaflet JS -->
-<script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 
 <script>
+document.addEventListener("DOMContentLoaded", function () {
+
     var map = L.map('map').setView([54.5, 40], 5);
 
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
         attribution: '© OpenStreetMap'
     }).addTo(map);
 
-    var lugansk = [48.573, 39.355];
-    var kaluga = [54.513, 36.261];
-    var moscow = [55.7558, 37.6173];
-    var volgograd = [48.708, 44.513];
+    var cities = {
+        "Луганск": {
+            coords: [48.573, 39.355],
+            photos: ["images/lugansk1.jpg", "images/lugansk2.jpg"]
+        },
+        "Калуга": {
+            coords: [54.513, 36.261],
+            photos: ["images/kaluga1.jpg"]
+        },
+        "Москва": {
+            coords: [55.7558, 37.6173],
+            photos: ["images/moscow1.jpg"]
+        },
+        "Волгоград": {
+            coords: [48.708, 44.513],
+            photos: ["images/volgograd1.jpg"]
+        }
+    };
 
-    L.marker(lugansk).addTo(map).bindPopup("Луганск");
-    L.marker(kaluga).addTo(map).bindPopup("Калуга");
-    L.marker(moscow).addTo(map).bindPopup("Москва");
-    L.marker(volgograd).addTo(map).bindPopup("Волгоград");
+    var routePoints = [];
 
-    var route = L.polyline([
-        lugansk,
-        kaluga,
-        moscow,
-        volgograd
-    ], {color: '#0a3d62', weight: 4}).addTo(map);
+    for (var city in cities) {
 
-    map.fitBounds(route.getBounds());
+        routePoints.push(cities[city].coords);
+
+        L.marker(cities[city].coords)
+            .addTo(map)
+            .bindPopup("<b>" + city + "</b><br><button onclick=\"openGallery('" + city + "')\">Смотреть фото</button>");
+    }
+
+    L.polyline(routePoints, {
+        color: '#0a3d62',
+        weight: 4
+    }).addTo(map);
+
+    map.fitBounds(routePoints);
+
+    window.openGallery = function(cityName) {
+        var photos = cities[cityName].photos;
+        var galleryHTML = "<h2 style='text-align:center'>" + cityName + "</h2>";
+
+        photos.forEach(function(photo) {
+            galleryHTML += "<img src='" + photo + "' style='width:90%; margin:10px auto; display:block; border-radius:15px;'>";
+        });
+
+        document.body.innerHTML = galleryHTML + 
+        "<div style='text-align:center; margin:30px;'><button onclick='location.reload()'>Назад к карте</button></div>";
+    }
+
+});
 </script>
+
 
 
 </body>
