@@ -39,5 +39,43 @@
     © 2026 DIPLOMAT SUN
 </footer>
 
+<h2 style="text-align:center; margin-top:60px;">Маршрут путешествия по России</h2>
+
+<div id="map"></div>
+
+<!-- Leaflet CSS -->
+<link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css"/>
+
+<!-- Leaflet JS -->
+<script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+
+<script>
+    var map = L.map('map').setView([54.5, 40], 5);
+
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '© OpenStreetMap'
+    }).addTo(map);
+
+    var lugansk = [48.573, 39.355];
+    var kaluga = [54.513, 36.261];
+    var moscow = [55.7558, 37.6173];
+    var volgograd = [48.708, 44.513];
+
+    L.marker(lugansk).addTo(map).bindPopup("Луганск");
+    L.marker(kaluga).addTo(map).bindPopup("Калуга");
+    L.marker(moscow).addTo(map).bindPopup("Москва");
+    L.marker(volgograd).addTo(map).bindPopup("Волгоград");
+
+    var route = L.polyline([
+        lugansk,
+        kaluga,
+        moscow,
+        volgograd
+    ], {color: '#0a3d62', weight: 4}).addTo(map);
+
+    map.fitBounds(route.getBounds());
+</script>
+
+
 </body>
 </html>
