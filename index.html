@@ -11,9 +11,9 @@
 
 <style>
 #map {
-    height: 500px;
+    height: 550px;
     width: 90%;
-    margin: 40px auto;
+    margin: 60px auto;
     border-radius: 20px;
 }
 </style>
@@ -53,7 +53,7 @@
 </footer>
 
 <h2 style="text-align:center; margin-top:60px;">
-Маршрут путешествия по России
+Путешествия по России
 </h2>
 
 <div id="map"></div>
@@ -63,16 +63,19 @@
 <script>
 document.addEventListener("DOMContentLoaded", function () {
 
-    var map = L.map('map').setView([54.5, 40], 5);
+    var map = L.map('map', {
+        zoomControl: false
+    }).setView([55, 40], 5);
 
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-        attribution: '© OpenStreetMap'
+    // Тёмная карта
+    L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
+        attribution: '&copy; OpenStreetMap &copy; CartoDB'
     }).addTo(map);
 
     var cities = {
         "Луганск": {
             coords: [48.573, 39.355],
-            photos: ["images/lugansk1.jpg", "images/lugansk2.jpg"]
+            photos: ["images/lugansk1.jpg"]
         },
         "Калуга": {
             coords: [54.513, 36.261],
@@ -88,38 +91,37 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     };
 
-    var routePoints = [];
-
     for (var city in cities) {
 
-        routePoints.push(cities[city].coords);
-
-        L.marker(cities[city].coords)
-            .addTo(map)
-            .bindPopup("<b>" + city + "</b><br><button onclick=\"openGallery('" + city + "')\">Смотреть фото</button>");
+        L.circleMarker(cities[city].coords, {
+            radius: 8,
+            fillColor: "#1e90ff",
+            color: "#ffffff",
+            weight: 2,
+            fillOpacity: 0.9
+        }).addTo(map)
+        .bindPopup("<b style='color:black'>" + city + "</b><br><button onclick=\"openGallery('" + city + "')\">Смотреть фото</button>");
     }
 
-    L.polyline(routePoints, {
-        color: '#0a3d62',
-        weight: 4
-    }).addTo(map);
-
-    map.fitBounds(routePoints);
-
     window.openGallery = function(cityName) {
+
         var photos = cities[cityName].photos;
-        var galleryHTML = "<h2 style='text-align:center'>" + cityName + "</h2>";
+        var galleryHTML = "<div style='background:#111; min-height:100vh; padding:40px; color:white'>";
+        galleryHTML += "<h2 style='text-align:center'>" + cityName + "</h2>";
 
         photos.forEach(function(photo) {
-            galleryHTML += "<img src='" + photo + "' style='width:90%; margin:10px auto; display:block; border-radius:15px;'>";
+            galleryHTML += "<img src='" + photo + "' style='width:90%; max-width:600px; display:block; margin:20px auto; border-radius:15px;'>";
         });
 
-        document.body.innerHTML = galleryHTML + 
-        "<div style='text-align:center; margin:30px;'><button onclick='location.reload()'>Назад к карте</button></div>";
+        galleryHTML += "<div style='text-align:center; margin-top:40px;'><button onclick='location.reload()' style='padding:10px 20px; background:#1e90ff; border:none; border-radius:8px; color:white;'>Назад к карте</button></div>";
+        galleryHTML += "</div>";
+
+        document.body.innerHTML = galleryHTML;
     }
 
 });
 </script>
+
 
 
 
